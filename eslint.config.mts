@@ -2,13 +2,19 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import ts from "typescript-eslint";
-
-const eslintConfig = defineConfig([
-  // js.configs.recommended,
+import * as js from "@eslint/js";
+import prettier from "eslint-plugin-prettier";
+/** @type {import('eslint').Linter.Config[]} */
+export default defineConfig([
+  js.configs.recommended,
   ...ts.configs.recommended,
   ...nextVitals,
   ...nextTs,
   {
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    plugins: {
+      prettier,
+    },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
     },
@@ -25,5 +31,3 @@ const eslintConfig = defineConfig([
     "package-lock.json",
   ]),
 ]);
-
-export default eslintConfig;

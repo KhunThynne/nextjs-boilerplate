@@ -1,7 +1,6 @@
 "use client";
 
-import { ThemeProvider } from "@components/theme-provider";
-import { Toaster } from "@components/ui/sonner";
+import { Toaster } from "@components/custom/sonner";
 import { DialogProvider } from "@/libs/dialog/DialogProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextIntlClientProvider } from "next-intl";
@@ -22,10 +21,8 @@ export default function Providers({
     <NextIntlClientProvider locale={locale} messages={messages}>
       <QueryClientProvider client={queryClient}>
         <DialogProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Toaster />
-            {children}
-          </ThemeProvider>
+          <Toaster />
+          {children}
         </DialogProvider>
       </QueryClientProvider>
     </NextIntlClientProvider>

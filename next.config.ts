@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import withPWAInit from "@ducanh2912/next-pwa";
 
-const withNextIntl = createNextIntlPlugin("./src/libs/i18n/request.ts");
+const withNextIntl = createNextIntlPlugin("./src/libs/next-intl/request.ts");
 
 const withPWA = withPWAInit({
   dest: "public",
@@ -16,10 +16,7 @@ const withPWA = withPWAInit({
   },
 });
 
-const nextConfig = {
-  /**
-   * @type {import('next').NextConfig}
-   */
+const nextConfig: NextConfig = {
   turbopack: {
     // options
   },
@@ -30,6 +27,7 @@ const nextConfig = {
     turbopackFileSystemCacheForDev: true,
     mcpServer: true,
     authInterrupts: true,
+    // globalNotFound: true,
   },
   // trailingSlash:true,
   typedRoutes: false,

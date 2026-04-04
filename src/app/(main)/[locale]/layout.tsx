@@ -1,8 +1,11 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import Providers from "../providers";
 import { getMessages } from "next-intl/server";
+
+import Providers from "../providers";
+import { ThemeProvider } from "@wrksz/themes/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,25 +31,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function LocaleLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}) {
+export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
   const { locale } = await params;
   const messages = await getMessages();
-
   return (
-    <html lang={locale}>
-      <body
-        suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers locale={locale} messages={messages}>
-          {children}
-        </Providers>
+    <html lang={locale} suppressHydrationWarning>
+      <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <Providers locale={locale} messages={messages}>
+            {children}
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

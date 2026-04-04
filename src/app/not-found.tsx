@@ -1,10 +1,10 @@
 import { getLocale } from "next-intl/server";
-import getRequestConfig from "@/libs/i18n/request";
+import getRequestConfig from "@/libs/next-intl/request";
 import { createTranslator } from "next-intl";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
 import clsx from "clsx";
-import { ThemeProvider } from "@components/theme-provider";
+import { ThemeProvider } from "@wrksz/themes/next";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Not found",
@@ -31,12 +31,8 @@ export default async function NotFoundRoot() {
   }
   const t = createTranslator({ locale, messages });
   return (
-    <html key="global-not-found" lang={locale}>
-      <body
-        className={clsx(`antialiased`)}
-        key={"global-not-found"}
-        suppressHydrationWarning
-      >
+    <html key="global-not-found" lang={locale} suppressHydrationWarning>
+      <body className={clsx(`antialiased`)} key={"global-not-found"} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -45,12 +41,8 @@ export default async function NotFoundRoot() {
         >
           <div className="relative h-screen place-content-center place-items-center  text-center">
             <div className="">
-              <h1 className="mb-4 text-6xl font-extrabold text-foreground dark:text-white">
-                {404}
-              </h1>
-              <div className="mb-6 max-w-md text-lg text-muted-foreground">
-                {t("not_found.description")}
-              </div>
+              <h1 className="mb-4 text-6xl font-extrabold text-foreground dark:text-white">{404}</h1>
+              <div className="mb-6 max-w-md text-lg text-muted-foreground">{t("not_found.description")}</div>
               <Link href="/">
                 <Button variant="default">Home</Button>
               </Link>

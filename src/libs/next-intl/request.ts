@@ -6,11 +6,10 @@ import { routing } from "./routing";
 export default getRequestConfig(async ({ requestLocale }) => {
   // This typically corresponds to the `[locale]` segment
   const requested = await requestLocale;
-  const locale = hasLocale(routing.locales, requested)
-    ? requested
-    : routing.defaultLocale;
+  const locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale;
   return {
     locale,
+    timeZone: "Asia/Bangkok",
     messages: (await import(`../../messages/${locale}.json`)).default,
   };
 });

@@ -1,6 +1,9 @@
+"use client";
+import { useDialog } from "@/shared/hooks/useDialog";
 import { useTranslations } from "next-intl";
 
 export default function HomeDetail() {
+  const dialog = useDialog();
   const t = useTranslations("Index");
   return (
     <>

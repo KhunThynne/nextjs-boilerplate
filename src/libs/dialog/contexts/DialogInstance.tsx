@@ -9,20 +9,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@components/ui/dialog";
-import type { DialogInstanceProps } from "./index.type";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useImperativeHandle,
-  useLayoutEffect,
-  useState,
-} from "react";
+import type { DialogContextInstanceType, DialogInstanceProps } from "../index.type";
+import { createContext, useCallback, useImperativeHandle, useLayoutEffect, useState } from "react";
 import clsx from "clsx";
 import type { DialogOverlayProps } from "@radix-ui/react-dialog";
+import { useDialogContext } from "../hooks/useDialogContext";
 // import { DialogInstanceProps } from "./dialog.type";
 
-const DialogContentInstance = ({
+export const DialogContentInstance = ({
   title,
   description,
   ref,
@@ -42,24 +36,25 @@ const DialogContentInstance = ({
         onInteractOutside: (e: Event) => e.preventDefault(),
       })}
       className={clsx(
+        "flex flex-col",
         {
-          "max-h-screen overflow-y-auto max-sm:h-screen max-sm:max-w-none max-sm:rounded-none":
+          "max-h-screen overflow-y-auto max-sm:h-screen max-sm:max-w-none max-sm:rounded-none ":
             variant === "fullscreen",
         },
         options?.content?.className,
       )}
     >
       <DialogHeader {...options?.header}>
-        {
+        {title && (
           <DialogTitle className="text-left" {...options?.title}>
             {title}
           </DialogTitle>
-        }
-        {
+        )}
+        {description && (
           <DialogDescription className="text-left" {...options?.description}>
             {description}
           </DialogDescription>
-        }
+        )}
       </DialogHeader>
       {content}
       {footer && <DialogFooter {...options?.footer}>{footer}</DialogFooter>}
@@ -67,38 +62,14 @@ const DialogContentInstance = ({
   );
 };
 
-type DialogContextInstanceType = {
-  dailogState: boolean;
-  setDialogState: React.Dispatch<React.SetStateAction<boolean>>;
-  closeDialog: () => void;
-};
-const DialogContextInstance = createContext<
-  DialogContextInstanceType | undefined
->(undefined);
+export const DialogContextInstance = createContext<DialogContextInstanceType | undefined>(undefined);
 
-export const DialogInstanceProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const DialogInstanceProvider = ({ children }: { children: React.ReactNode }) => {
   const [dailogState, setDialogState] = useState(true);
   const closeDialog = useCallback(() => {
     setDialogState(false);
   }, []);
-  return (
-    <DialogContextInstance value={{ closeDialog, dailogState, setDialogState }}>
-      {children}
-    </DialogContextInstance>
-  );
-};
-export const useDialogContext = () => {
-  const context = useContext(DialogContextInstance);
-  if (!context) {
-    throw new Error(
-      "useDialogInstance must be used within a DialogInstanceProvider",
-    );
-  }
-  return context;
+  return <DialogContextInstance value={{ closeDialog, dailogState, setDialogState }}>{children}</DialogContextInstance>;
 };
 
 export function DialogInstance(
@@ -118,7 +89,9 @@ export function DialogInstance(
   // const [open, setOpen] = useState(props.options?.dialog?.open);
 
   useLayoutEffect(() => {
-    props.options?.dialog?.open && setDialogState(props.options?.dialog?.open);
+    if (props.options?.dialog?.open) {
+      setDialogState(props.options?.dialog?.open);
+    }
   }, [props.options?.dialog?.open, setDialogState]);
   useImperativeHandle(refDialog, () => {
     return {
@@ -131,16 +104,9 @@ export function DialogInstance(
 
   return (
     <Dialog {...propsDialog.options?.dialog} open={dailogState}>
-      {props?.trigger && (
-        <DialogTrigger {...propsDialog?.options?.trigger}>
-          {props.trigger}
-        </DialogTrigger>
-      )}
+      {props?.trigger && <DialogTrigger {...propsDialog?.options?.trigger}>{props.trigger}</DialogTrigger>}
       {props?.options?.overlay && (
-        <DialogOverlay
-          className="backdrop-blur"
-          {...(props?.options?.overlay as DialogOverlayProps)}
-        />
+        <DialogOverlay className="backdrop-blur" {...(props?.options?.overlay as DialogOverlayProps)} />
       )}
       {options?.portal ? (
         <DialogPortal {...options.portal}>
